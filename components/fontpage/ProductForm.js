@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { formatter } from "../../utils/helpers";
-
+import {CartContext} from '../../context/shopContext'
 function ProductForm({ product }) {
+
+  const {addToCard} = useContext(CartContext)
   const allVarientOptions = product.variants.map((variant) => {
     const allOptions = {};
 
@@ -9,7 +11,7 @@ function ProductForm({ product }) {
       allOptions[item.name] = item.value;
     });
 
-    console.log(product.variants[0].priceV2.amount);
+   
     return {
       id: variant.id,
       title: variant.title,
@@ -36,7 +38,17 @@ function ProductForm({ product }) {
         [name]: value,
       };
     });
-  }
+    const selection = {
+      ...selectedOptions,
+      [name]: value,
+    }
+    allVarientOptions.map((item) => {
+      if(JSON.stringify(item.options) === JSON.stringify(selection)){
+        setSelectedVariant(item)
+      }
+    
+  })
+}
   //   console.log("defaultValues", defaultValues);
   //   console.log("allVarientOptions", allVarientOptions);
 
@@ -81,7 +93,9 @@ function ProductForm({ product }) {
           </fieldset>
         );
       })}
-      <button className="bg-black rounded-lg text-white px-2 py-3 hover:bg-gray-800">
+      <button onClick={() => {
+        addToCard(selectedVariant)
+      }} className="bg-black rounded-lg text-white px-2 py-3 hover:bg-gray-800">
         Add To Card
       </button>
     </div>

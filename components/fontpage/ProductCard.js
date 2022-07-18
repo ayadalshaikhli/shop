@@ -8,13 +8,21 @@ import ShowCurrentProduct from "./ShowCurrentProduct";
 
 const ProductCard = ({ product }) => {
   const [isShown, setIsShown] = useState(false);
+  const [show, setShow] = useState(false);
 
   const handleClick = (event) => {
     // 👇️ toggle shown state
-    setIsShown((current) => !current);
+    // setIsShown((current) => !current);
 
     // 👇️ or simply set it to true
-    // setIsShown(true);
+    setIsShown(true);
+  };
+  const handleClickHide = (event) => {
+    // 👇️ toggle shown state
+    // setIsShown((current) => !current);
+
+    // 👇️ or simply set it to true
+    setIsShown(false);
   };
   // pro
   const { handle, title, id } = product;
@@ -27,18 +35,31 @@ const ProductCard = ({ product }) => {
     <>
       {/* <Link key={product.id} href={`/product/${id}`}> */}
 
-      <div onClick={handleClick}>
-        <div>
-          {/* 👇️ show elements on click */}
-          {isShown && (
-            <div>
-              <ShowCurrentProduct handle={handle} />
-            </div>
-          )}
+{/* 
+      <div onClick={handleClick}> */}
+     {show && 
+     <div className="relative">
+      <a onClick={() => {
+        setShow(false);
+      }}>
+        <div style={{
+          zIndex: "10",
+          position: "fixed",
+          top: "20%",
+          left: "79%",
 
-          {/* 👇️ show component on click */}
-          {isShown && <h1></h1>}
-        </div>
+          
+          transform: "translate(-50%, -50%)",
+
+        }} className="bg-red-100 w-5 h-5  text-center align-middle justify-center"> X </div>
+      </a>
+     
+     <ShowCurrentProduct handle={handle}/>
+     </div>}
+       <a className=" " onClick={() => {
+      setShow(!show)
+      }}>
+       
         <a className="group text-left">
           <div className="w-full bg-gray-200 rounded-3xl overflow-hidden">
             <div className="relative group-hover:opacity-75 h-72">
@@ -50,9 +71,10 @@ const ProductCard = ({ product }) => {
             {formatter.format(price)}
           </p>
         </a>
-      </div>
+      {/* </div> */}
 
       {/* </Link> */}
+      </a>
     </>
   );
 };
@@ -88,4 +110,16 @@ const ProductCard = ({ product }) => {
 //   };
 // }
 
+// <div>
+
+// {isShown && (
+//   <div>
+    
+//     <ShowCurrentProduct className="hidden" id="project-toggle" handle={handle} />
+//   </div>
+// )}
+
+
+// {isShown && <h1></h1>}
+// </div>
 export default ProductCard;
