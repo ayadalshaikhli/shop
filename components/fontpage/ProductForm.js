@@ -1,105 +1,95 @@
-import React, { useState,useContext } from "react";
-import { formatter } from "../../utils/helpers";
-import {CartContext} from '../../context/shopContext'
-function ProductForm({ product }) {
+import { useState, useEffect, useContext } from "react"
+import { formatter } from '../../utils/helpers'
+import ProductOptions from "./ProductOptions"
+import { CartContext } from "../../context/shopContext"
+import axios from "axios"
+import useSWR from 'swr'
 
-  const {addToCard} = useContext(CartContext)
-  const allVarientOptions = product.variants.map((variant) => {
-    const allOptions = {};
 
-    variant.selectedOptions.map((item) => {
-      allOptions[item.name] = item.value;
-    });
 
+export default function ProductForm({ product }) {
+
+ 
+
+  const { addToCart } = useContext(CartContext)
+
+  const allVariantOptions = product.variants.map(variant => {
+    const allOptions = {}
+
+    variant.selectedOptions.map(item => {
+      allOptions[item.name] = item.value
+    })
    
     return {
       id: variant.id,
-      title: variant.title,
-      handle: variant.handle,
-      image: variant.image.src,
+      title: product.title,
+      handle: product.handle,
+      image: variant.image?.src,
       options: allOptions,
-      variantsTitle: variant.title,
-      variantsPrice: variant.priceV2.amount,
-      variantQuantity: 1,
-    };
-  });
+      variantTitle: variant.title,
+      variantPrice: variant.priceV2.amount,
+      variantQuantity: 1
+    }
+  })
 
-  const defaultValues = {};
-  product.options.map((item) => {
-    defaultValues[item.name] = item.values[0];
-  });
+  const defaultValues = {}
+  product.options.map(item => {
+    defaultValues[item.name] = item.values[0]
+  })
 
-  const [selectedVariant, setSelectedVariant] = useState(allVarientOptions[0]);
-  const [selectedOptions, setSelectedOptions] = useState(defaultValues);
+  const [selectedVariant, setSelectedVariant] = useState(allVariantOptions[0])
+  const [selectedOptions, setSelectedOptions] = useState(defaultValues)
+
   function setOptions(name, value) {
-    setSelectedOptions((prevState) => {
-      return {
-        ...prevState,
-        [name]: value,
-      };
-    });
+    setSelectedOptions(prevState => {
+      return { ...prevState, [name]: value }
+    })
+
     const selection = {
       ...selectedOptions,
-      [name]: value,
+      [name]: value
     }
-    allVarientOptions.map((item) => {
-      if(JSON.stringify(item.options) === JSON.stringify(selection)){
+
+    allVariantOptions.map(item => {
+      if (JSON.stringify(item.options) === JSON.stringify(selection)) {
         setSelectedVariant(item)
       }
-    
-  })
-}
-  //   console.log("defaultValues", defaultValues);
-  //   console.log("allVarientOptions", allVarientOptions);
+    })
+  }
+
+ 
+
 
   return (
-    <div className="rounded-2xl p-4 shadow-lg flex flex-col w-full md:w-1/3">
-      <div className="text-4xl font-bold">{product.title.value}</div>
-      <span className="pb-6">
-        {formatter.format(product.variants[0].priceV2.amount)}
-      </span>
-      {product.options.map(({ name, values }) => {
-        return (
-          <fieldset className="flex flex-col">
-            <legend className="text-xl font-semibold">{name}</legend>
-            <div className="inline-flex items-center flex-wrap">
-              {values.map((value) => {
-                const id = `option-${name}-${value}`;
-                const checked = selectedOptions[name] === value;
-                return (
-                  <label htmlFor={id} key={id}>
-                    <input
-                      className="sr-only"
-                      type="radio"
-                      id={id}
-                      name={`option-${name}`}
-                      value={value.value}
-                      checked={checked}
-                      onChange={() => setOptions(name, value)}
-                    />
-                    <div
-                      className={`p-2 my-3 text-lg rounded-full block cursor-pointer mr-3 ${
-                        checked
-                          ? "text-white bg-gray-900"
-                          : "text-gray-900 bg-gray-200"
-                      }`}
-                    >
-                      <span className="px-2">{value.value}</span>
-                    </div>
-                  </label>
-                );
-              })}
-            </div>
-          </fieldset>
-        );
-      })}
-      <button onClick={() => {
-        addToCard(selectedVariant)
-      }} className="bg-black rounded-lg text-white px-2 py-3 hover:bg-gray-800">
-        Add To Card
-      </button>
-    </div>
-  );
-}
+    <div className="rounded-2xl p-4 shadow-2xl flex flex-col w-full ">
+      <h2 className="text-2xl font-bold">{product.title.value}</h2>
+      <span className="pb-3">{formatter.format(product.variants[0].priceV2.amount)}</span>
+      {
+        product.options.map(({ name, values }) => (
+          <ProductOptions
+            key={`key-${name}`}
+            name={name}
+            values={values}
+            selectedOptions={selectedOptions}
+            setOptions={setOptions}
+            selectedVariant={selectedVariant}
+          />
+        ))
+      }
+    
+    
+          <button
+            onClick={() => {
+              addToCart(selectedVariant)
+            }}
+            className="bg-black rounded-lg text-white px-2 py-3 mt-3 hover:bg-gray-800">Add To Card
+          </button> 
+          {/* <button
+            className="rounded-lg text-white px-2 py-3 mt-3 bg-gray-800 cursor-not-allowed">
+              Sold out!
+          </button> */}
+    
 
-export default ProductForm;
+    </div>
+  )
+}

@@ -35,7 +35,6 @@ const ShowCurrentProduct = ({ handle }) => {
     <>
     <div
        id={`${handle}-toggle`}
-      
       style={{
         position: "fixed",
         top: "50%",
@@ -47,7 +46,7 @@ const ShowCurrentProduct = ({ handle }) => {
       }}
       className=" bg-gray-400 bg-opacity-60 mx-auto flex w-11/12 max-w-6xl flex-col items-center justify-center space-y-8 md:flex-row md:items-start md:space-y-0 md:space-x-4 lg:space-x-8"
     >
-      <button className=" absolute top-0 right-5 text-3xl" onClick={() => {
+      <button className="absolute top-0 right-5 text-3xl" onClick={() => {
        
       }}>
         X

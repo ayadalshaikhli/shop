@@ -6,7 +6,7 @@ import { BsBag } from "react-icons/bs";
 export default function Nav() {
   const { cart, cartOpen, setCartOpen } = useContext(CartContext);
 
-  var cartQuantity= 0;
+  let cartQuantity= 0;
   cart.map((item) => {
     return (cartQuantity += item?.variantQuantity);
   });
